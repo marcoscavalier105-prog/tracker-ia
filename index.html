@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤖 Proyectos IA — Marcos Cavalier</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c10;--surface:#111318;--border:#1e2330;--accent:#3b82f6;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--orange:#f97316;--text:#e2e8f0;--muted:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;}
+header{background:linear-gradient(135deg,#0f1623,#0a0c10);border-bottom:1px solid var(--border);padding:18px 16px 14px;position:sticky;top:0;z-index:100;}
+.header-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.header-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.header-title span{color:var(--accent);}
+.live{font-size:10px;display:flex;align-items:center;gap:5px;color:var(--muted);border:1px solid var(--border);padding:3px 8px;border-radius:20px;cursor:pointer;transition:all .2s;}
+.live:hover{border-color:var(--accent);color:var(--accent);}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+.dot.loading{background:var(--gold);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px;text-align:center;}
+.sv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.blue{color:var(--accent);}.green{color:var(--green);}.red{color:var(--red);}.orange{color:var(--orange);}
+input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;}
+input:focus{border-color:var(--accent);}
+.tabs{display:flex;gap:6px;margin-bottom:8px;}
+.tab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;text-align:center;}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.filters{display:flex;gap:6px;flex-wrap:wrap;}
+.fb{padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;}
+.fb.active{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.1);}
+main{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.loading-wrap{text-align:center;padding:60px 20px;color:var(--muted);font-size:12px;letter-spacing:2px;}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.card{border-radius:12px;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:border-color .2s,transform .15s;}
+.card:hover{border-color:#2a3040;transform:translateY(-1px);}
+.card.cdone{border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.05);}
+.card.cblock{border-color:rgba(239,68,68,.3);}
+.ch{padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;}
+.ci{font-size:18px;flex-shrink:0;margin-top:1px;}
+.cb{flex:1;min-width:0;}
+.ct{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.3;}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.badge{font-size:9px;padding:2px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;border:1px solid;}
+.b-done{color:var(--green);border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.1);}
+.b-cur{color:var(--accent);border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.1);}
+.b-blk{color:var(--red);border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.1);}
+.b-alert{color:var(--orange);border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.1);}
+.b-over{color:var(--red);border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.15);}
+.dates{display:flex;gap:12px;font-size:10px;color:var(--muted);margin-bottom:8px;}
+.pw{display:flex;align-items:center;gap:8px;}
+.pb{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.pf{height:100%;border-radius:2px;transition:width .5s;}
+.pf.low{background:var(--red);}.pf.mid{background:var(--gold);}.pf.hi{background:var(--green);}
+.pt{font-size:10px;color:var(--muted);white-space:nowrap;}
+.chev{font-size:14px;color:var(--muted);transition:transform .2s;flex-shrink:0;margin-top:2px;}
+.chev.open{transform:rotate(180deg);}
+.subs{border-top:1px solid var(--border);padding:10px 16px 14px;display:none;}
+.subs.open{display:block;}
+.sub-label{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.sub{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(30,35,48,.5);}
+.sub:last-child{border-bottom:none;}
+.chk{width:16px;height:16px;border-radius:50%;flex-shrink:0;border:1.5px solid var(--muted);display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.chk.done{background:var(--green);border-color:var(--green);}
+.chk.done::after{content:'✓';font-size:9px;color:#fff;}
+.st{font-size:12px;color:var(--text);line-height:1.4;}
+.st.done{color:var(--muted);text-decoration:line-through;}
+.empty{text-align:center;padding:50px;color:var(--muted);font-size:12px;letter-spacing:1px;}
+.last-sync{font-size:9px;color:var(--muted);text-align:center;padding:4px;letter-spacing:1px;}
+footer{text-align:center;padding:16px;font-size:10px;color:var(--muted);letter-spacing:1px;border-top:1px solid var(--border);margin-top:10px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-label">Coordinador SST — UNIQUE S.A.</div>
+  <div class="header-row">
+    <div class="header-title">🤖 Proyectos <span>IA</span></div>
+    <div class="live" onclick="loadData()" id="livebtn">
+      <div class="dot" id="dot"></div>
+      <span id="livestatus">SYNC</span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="sv blue" id="s1">—</div><div class="sl">Total</div></div>
+    <div class="stat"><div class="sv blue" id="s2">—</div><div class="sl">En curso</div></div>
+    <div class="stat"><div class="sv green" id="s3">—</div><div class="sl">Completados</div></div>
+    <div class="stat"><div class="sv red" id="s4">—</div><div class="sl">Alertas</div></div>
+  </div>
+  <input id="search" placeholder="🔍 buscar proyecto..." oninput="render()"/>
+  <div class="tabs">
+    <button class="tab active" id="tp" onclick="setTab('p')">🔄 En curso</button>
+    <button class="tab" id="td" onclick="setTab('d')">✅ Completados</button>
+  </div>
+  <div class="filters" id="flt">
+    <button class="fb active" onclick="setF('all',this)">Todos</button>
+    <button class="fb" onclick="setF('alert',this)">⚠️ Alertas</button>
+    <button class="fb" onclick="setF('block',this)">🔴 Bloqueados</button>
+  </div>
+</header>
+<div class="last-sync" id="lastsync"></div>
+<main id="main"></main>
+<footer>Marcos Cavalier Jara · UNIQUE S.A. · Lima, Perú</footer>
+
+<script>
+const SUPA_URL = 'https://vrgydtlkuebwgdsohsmc.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyZ3lkdGxrdWVid2dkc29oc21jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NzYxMDksImV4cCI6MjA5NjE1MjEwOX0.RIp94Eh9hFIsCrcO_GVrwHdqCrN44hHtmjeJpEy1tOw';
+
+let projects = {pendientes:{}, completados:{}};
+let tab='p', filter='all', expanded={};
+
+function isAlertSoon(a){if(!a)return false;const d=(new Date(a)-new Date())/86400000;return d>=0&&d<=7;}
+function isOverdue(d){if(!d)return false;return new Date(d)<new Date();}
+function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
+function prog(subs){const done=subs.filter(s=>s.done).length;return{done,total:subs.length,pct:subs.length?Math.round(done/subs.length*100):0};}
+function pcls(p){return p<40?'low':p<75?'mid':'hi';}
+
+async function loadData(){
+  const dot=document.getElementById('dot');
+  const st=document.getElementById('livestatus');
+  dot.classList.add('loading');
+  st.textContent='CARGANDO...';
+  document.getElementById('main').innerHTML=`<div class="loading-wrap"><div class="spinner"></div>SINCRONIZANDO CON SUPABASE...</div>`;
+
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/proyectos_ia?select=*&order=id`, {
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`
+      }
+    });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+
+    projects = {pendientes:{}, completados:{}};
+    rows.forEach(r => {
+      const isPend = r.grupo.toUpperCase() === 'PENDIENTE';
+      const bucket = isPend ? projects.pendientes : projects.completados;
+      if(!bucket[r.id]){
+        bucket[r.id] = {
+          id: r.id, grupo: r.grupo, title: r.proyecto,
+          status: r.estado_proyecto, due: r.fecha_entrega||'',
+          alert: r.fecha_alerta||'', subtasks: []
+        };
+      }
+      bucket[r.id].subtasks.push({text: r.subtarea, done: r.estado_subtarea==='Hecho'});
+    });
+
+    dot.classList.remove('loading');
+    st.textContent='EN LÍNEA';
+    const now = new Date();
+    document.getElementById('lastsync').textContent=`↻ última sync: ${now.toLocaleTimeString('es-PE')}`;
+    render();
+  } catch(e) {
+    dot.classList.remove('loading');
+    st.textContent='ERROR';
+    document.getElementById('main').innerHTML=`<div class="empty">⚠️ Error al conectar con Supabase.<br><br><span style="font-size:10px">${e.message}</span></div>`;
+  }
+}
+
+function setTab(t){
+  tab=t;
+  document.getElementById('tp').classList.toggle('active',t==='p');
+  document.getElementById('td').classList.toggle('active',t==='d');
+  document.getElementById('flt').style.display=t==='p'?'flex':'none';
+  render();
+}
+
+function setF(f,el){
+  filter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const pend=Object.values(projects.pendientes);
+  const done=Object.values(projects.completados);
+  const alerts=pend.filter(p=>isAlertSoon(p.alert)||isOverdue(p.due));
+
+  document.getElementById('s1').textContent=pend.length+done.length;
+  document.getElementById('s2').textContent=pend.length;
+  document.getElementById('s3').textContent=done.length;
+  document.getElementById('s4').textContent=alerts.length;
+
+  let list=tab==='p'?pend:done;
+  if(q)list=list.filter(p=>p.title.toLowerCase().includes(q));
+  if(tab==='p'){
+    if(filter==='alert')list=list.filter(p=>isAlertSoon(p.alert)||isOverdue(p.due));
+    if(filter==='block')list=list.filter(p=>p.status&&p.status.toLowerCase().includes('bloqueado'));
+  }
+  document.getElementById('main').innerHTML=list.length?list.map(cardHTML).join(''):'<div class="empty">— SIN RESULTADOS —</div>';
+}
+
+function cardHTML(p){
+  const isDone=p.grupo.toUpperCase()==='COMPLETADO';
+  const {done,total,pct}=prog(p.subtasks);
+  const over=isOverdue(p.due), alrt=isAlertSoon(p.alert);
+  const isBlk=p.status&&p.status.toLowerCase().includes('bloqueado');
+  const cc=isDone?'cdone':isBlk?'cblock':'';
+  const icon=isDone?'✅':isBlk?'🔴':'🔄';
+  const isOpen=expanded[p.id];
+  return`<div class="card ${cc}" id="card-${p.id}">
+  <div class="ch" onclick="toggleCard('${p.id}')">
+    <div class="ci">${icon}</div>
+    <div class="cb">
+      <div class="ct">${p.title}</div>
+      <div class="meta">
+        ${isDone?'<span class="badge b-done">Completado</span>':isBlk?'<span class="badge b-blk">Bloqueado</span>':'<span class="badge b-cur">En curso</span>'}
+        ${over?'<span class="badge b-over">⚠️ Vencido</span>':''}
+        ${alrt&&!over?'<span class="badge b-alert">🔔 Alerta</span>':''}
+      </div>
+      ${p.due?`<div class="dates"><span>📅 ${fmtDate(p.due)}</span>${p.alert?`<span>🔔 ${fmtDate(p.alert)}</span>`:''}</div>`:''}
+      <div class="pw"><div class="pb"><div class="pf ${pcls(pct)}" style="width:${pct}%"></div></div><div class="pt">${done}/${total} (${pct}%)</div></div>
+    </div>
+    <div class="chev${isOpen?' open':''}" id="chev-${p.id}">⌄</div>
+  </div>
+  <div class="subs${isOpen?' open':''}" id="sub-${p.id}">
+    <div class="sub-label">SUBTAREAS</div>
+    ${p.subtasks.map(s=>`<div class="sub"><div class="chk${s.done?' done':''}"></div><div class="st${s.done?' done':''}">${s.text}</div></div>`).join('')}
+  </div>
+</div>`;
+}
+
+function toggleCard(id){
+  expanded[id]=!expanded[id];
+  const sub=document.getElementById(`sub-${id}`);
+  const chev=document.getElementById(`chev-${id}`);
+  if(sub){sub.classList.toggle('open',expanded[id]);chev.classList.toggle('open',expanded[id]);}
+}
+
+// Auto-sync al cargar
+loadData();
+// Auto-sync cada 5 minutos
+setInterval(loadData, 300000);
+</script>
+</body>
+</html>
