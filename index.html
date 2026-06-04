@@ -232,7 +232,7 @@ function render(){
 }
 
 function cardHTML(p){
-  const isDone=!p.due;
+  const isDone=tab==='d';
   const {done,total,pct}=prog(p.subtasks);
   const over=isOverdue(p.due), alert=isAlertSoon(p.alert);
   const isBlk=p.status&&p.status.toLowerCase().includes('bloqueado');
